@@ -1,5 +1,3 @@
-# nfc-research-ios
-
 # 📱 iOS NFC Example App
 
 A quick example showing how to use the Core NFC API in iOS 11 and Swift.
