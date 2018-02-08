@@ -21,8 +21,13 @@ class ViewController: UITableViewController {
         self.view.backgroundColor = UIColor.white
         self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "reuseIdentifier")
         
+        createNFCSession()
+    }
+    
+    fileprivate func createNFCSession() {
         self.session = NFCNDEFReaderSession(delegate: self, queue: DispatchQueue.main, invalidateAfterFirstRead: false)
         self.session.alertMessage = "You can scan NFC-tags by holding them near your device."
+    
     }
 }
 
@@ -73,7 +78,7 @@ extension ViewController {
 extension ViewController : NFCNDEFReaderSessionDelegate {
     
     func readerSession(_ session: NFCNDEFReaderSession, didInvalidateWithError error: Error) {
-
+        createNFCSession()
     }
 
     func readerSession(_ session: NFCNDEFReaderSession, didDetectNDEFs messages: [NFCNDEFMessage]) {
