@@ -24,9 +24,13 @@ class ViewController: UITableViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+        
+        self.session = NFCNDEFReaderSession(delegate: self, queue: DispatchQueue.main, invalidateAfterFirstRead: false)
+        self.session?.alertMessage = "You can scan NFC-tags by holding them behind the top of your iPhone."
     }
 }
 
+// MARK: UITableView
 extension ViewController {
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -66,6 +70,18 @@ extension ViewController {
         self.present(alert, animated: true, completion: nil)
         
         self.tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+// MARK: NFCNDEFReaderSessionDelegate
+extension ViewController : NFCNDEFReaderSessionDelegate {
+    
+    func readerSession(_ session: NFCNDEFReaderSession, didInvalidateWithError error: Error) {
+
+    }
+
+    func readerSession(_ session: NFCNDEFReaderSession, didDetectNDEFs messages: [NFCNDEFMessage]) {
+        
     }
 }
 
