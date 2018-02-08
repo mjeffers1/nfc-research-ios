@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreNFC
 
 class ViewController: UIViewController {
 
