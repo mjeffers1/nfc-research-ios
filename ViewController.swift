@@ -11,7 +11,7 @@ import CoreNFC
 
 class ViewController: UITableViewController {
     
-    fileprivate var session: NFCNDEFReaderSession?
+    fileprivate var session: NFCNDEFReaderSession!
     fileprivate var messages: [[NFCNDEFMessage]] = []
 
     override func viewDidLoad() {
@@ -19,14 +19,10 @@ class ViewController: UITableViewController {
         // Do any additional setup after loading the view, typically from a nib.
         
         self.view.backgroundColor = UIColor.white
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "reuseIdentifier")
         
         self.session = NFCNDEFReaderSession(delegate: self, queue: DispatchQueue.main, invalidateAfterFirstRead: false)
-        self.session?.alertMessage = "You can scan NFC-tags by holding them behind the top of your iPhone."
+        self.session.alertMessage = "You can scan NFC-tags by holding them near your device."
     }
 }
 
