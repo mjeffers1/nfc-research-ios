@@ -29,6 +29,25 @@ class ViewController: UITableViewController {
         self.session.alertMessage = "You can scan NFC-tags by holding them near your device."
     
     }
+    
+    fileprivate class func nameFormat(from typeNameFormat: NFCTypeNameFormat) -> String {
+        switch typeNameFormat {
+        case .empty:
+            return "Empty"
+        case .nfcWellKnown:
+            return "NFC Well Known"
+        case .media:
+            return "Media"
+        case .absoluteURI:
+            return "Absolute URI"
+        case .nfcExternal:
+            return "NFC External"
+        case .unchanged:
+            return "Unchanged"
+        default:
+            return "Unknown"
+        }
+    }
 }
 
 // MARK: UITableView
@@ -63,7 +82,7 @@ extension ViewController {
         let nfcTag = self.messages[indexPath.section][indexPath.row]
         let records = nfcTag.records.map({ String(describing: String(data: $0.payload, encoding: .utf8)!) })
         
-        let alertTitle = " \(nfcTag.records.count) Records found in Message"
+        let alertTitle = nfcTag.records.count == 1 ? "One Record found." : " \(nfcTag.records.count) Records found."
         let alert = UIAlertController(title: alertTitle, message: records.joined(separator: "\n"), preferredStyle: .alert)
         
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
@@ -78,11 +97,33 @@ extension ViewController {
 extension ViewController : NFCNDEFReaderSessionDelegate {
     
     func readerSession(_ session: NFCNDEFReaderSession, didInvalidateWithError error: Error) {
+        
+        print(" ------------------------------------ ")
+        print("\n NFC Session invalidated: \(error.localizedDescription) \n")
+        print(" ------------------------------------ ")
+        
         createNFCSession()
     }
 
     func readerSession(_ session: NFCNDEFReaderSession, didDetectNDEFs messages: [NFCNDEFMessage]) {
         
+        for message in messages {
+            print(" ------------------------------------ ")
+            print(" * \(message.records.count) Records:")
+            for record in message.records {
+                print("\t* TypeNameFormat: \(ViewController.nameFormat(from: record.typeNameFormat))")
+                print("\t* Payload: \(String(data: record.payload, encoding: .utf8)!)")
+                print("\t* Type: \(record.type)")
+                print("\t* Identifier: \(record.identifier)\n")
+            }
+            print(" ------------------------------------ ")
+        }
+
+        self.messages.append(messages)
+        
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
 }
 
